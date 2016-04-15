@@ -35,6 +35,7 @@ namespace EpicBattleSimulator
 
         Fighter player = new Fighter("", 100, 100, 10, 10, 1);
         Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1);
+        Fighter figgy = new Fighter();
 
 
         private void UpdateInfo()
@@ -257,7 +258,6 @@ namespace EpicBattleSimulator
                 disableTimers();
                 progBarEnemy.Value = progBarEnemy.Minimum;
                 DisableButtons();
-                lblStatus.Text = "Du hast gewonnen!";
                 lblInfo.Text = $"{enemy.Name} wurde besiegt!";
             }
         }
