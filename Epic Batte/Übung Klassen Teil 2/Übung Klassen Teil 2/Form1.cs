@@ -10,6 +10,10 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using Microsoft.VisualBasic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections;
 
 namespace EpicBattleSimulator
 {
@@ -22,29 +26,44 @@ namespace EpicBattleSimulator
 
         int roundcount = 1;
         int poisoncount = 3;
-        
 
-        Fighter player = new Fighter("",120, 120, 15, 12);
-        Fighter ork = new Fighter("Tork der Ork",150, 150, 10, 8);
+
+        Fighter player = new Fighter("Tim", 120, 100, 10, 10);
+        Fighter enemy = new Fighter("Tork der Ork",150, 150, 10, 8);
+
+        private void cmdSerialize_Click(object sender, EventArgs e)
+        {
+            Serialize();
+            lblAusgabe.Text = $"Gespeichert!";
+              
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Deserialize();
+            lblAusgabe.Text = $"Geladen!";
+        }
+
 
         private void StartProperties()
         {
-            
-            if (player.Name == "")
+            Deserialize();
+            if (player.Name == null)
             {
                 string name = Interaction.InputBox("Gib hier den Namen deines Helden ein!", "Name", "Heldenname");
+                
                 player.Name = name;
             }
             
-            lblInfo.Text = $"Du kämpfst gegen {ork.Name}";
+            lblInfo.Text = $"Du kämpfst gegen {enemy.Name}";
             progBarHealth.Maximum = player.MaxLeben;
-            progBarEnemy.Maximum = ork.MaxLeben;
+            progBarEnemy.Maximum = enemy.MaxLeben;
             progBarHealth.Value = progBarHealth.Maximum;
             progBarEnemy.Value = progBarEnemy.Maximum;
             player.Leben = player.MaxLeben;
-            ork.Leben = ork.MaxLeben;
+            enemy.Leben = enemy.MaxLeben;
             lblPlayer.Text = $"{player.Name}";
-            lblEnemy.Text = $"{ork.Name}";
+            lblEnemy.Text = $"{enemy.Name}";
             lblStatus.Text = "";
             poisoncount = 3;
         }
@@ -53,7 +72,7 @@ namespace EpicBattleSimulator
         {
             try
             {
-                lblInfo.Text = $"{ork.Name} ist dran!\n";
+                lblInfo.Text = $"{enemy.Name} ist dran!\n";
                 lblInfo.Text += $"Er verursacht {EnemyGesamtschaden()} Schaden\n";
                 progBarHealth.Value -= EnemyGesamtschaden();
                 if (player.Leben > 50 && player.Vergiftet == false)
@@ -79,9 +98,9 @@ namespace EpicBattleSimulator
             {
                 if (player.Vergiftet)
                 {
-                    lblInfo.Text += $"Du erleidest {ork.Giftschaden} Giftschaden!\n";
-                    player.Leben -= ork.Giftschaden;
-                    progBarHealth.Value -= ork.Giftschaden;
+                    lblInfo.Text += $"Du erleidest {enemy.Giftschaden} Giftschaden!\n";
+                    player.Leben -= enemy.Giftschaden;
+                    progBarHealth.Value -= enemy.Giftschaden;
                     if (progBarHealth.Value == 0)
                     {
                         progBarHealth.Value -= 1;
@@ -123,7 +142,7 @@ namespace EpicBattleSimulator
 
         private int EnemyGesamtschaden()
         {
-            return ork.Attacke + ork.Bonusschaden;
+            return enemy.Attacke + enemy.Bonusschaden;
         }
 
         private int PlayerGesamtschaden()
@@ -191,7 +210,7 @@ namespace EpicBattleSimulator
 
         private void neuesSpielToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            player.Name = "";
+            //player.Name = "";
             EnableButtons();
             StartProperties();
         }
@@ -230,8 +249,65 @@ namespace EpicBattleSimulator
                 progBarEnemy.Value = progBarEnemy.Minimum;
                 DisableButtons();
                 lblStatus.Text = "Du hast gewonnen!";
-                lblInfo.Text = $"{ork.Name} wurde besiegt!";
+                lblInfo.Text = $"{enemy.Name} wurde besiegt!";
             }
         }
+
+
+        public void Serialize()
+        {
+            // Create a hashtable of values that will eventually be serialized.
+            // To serialize the hashtable and its key/value pairs,  
+            // you must first open a stream for writing. 
+            // In this case, use a file stream.
+            FileStream fs = new FileStream("DataFile.dat", FileMode.Create);
+
+            // Construct a BinaryFormatter and use it to serialize the data to the stream.
+            BinaryFormatter formatter = new BinaryFormatter();
+            try
+            {
+                formatter.Serialize(fs, player);
+            }
+            catch (SerializationException e)
+            {
+                Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+                throw;
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+
+        public void Deserialize()
+        {
+            // Declare the hashtable reference.
+            Fighter player = null;
+
+            // Open the file containing the data that you want to deserialize.
+            FileStream fs = new FileStream("DataFile.dat", FileMode.Open);
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+
+                // Deserialize the hashtable from the file and 
+                // assign the reference to the local variable.
+                player = (Fighter)formatter.Deserialize(fs);
+            }
+            catch (SerializationException e)
+            {
+                Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+                throw;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            // To prove that the table deserialized correctly, 
+            // display the key/value pairs.
+
+        }
+
     }
 }

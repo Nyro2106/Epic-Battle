@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace EpicBattleSimulator
 {
+    [Serializable()]
     class Fighter
     {
         private string name;
@@ -24,6 +29,14 @@ namespace EpicBattleSimulator
             attacke = attack;
             zaubermacht = zm;
         }
+
+        public Fighter()
+        {
+
+        }
+
+
+
 
         public int Bonusschaden
         {
