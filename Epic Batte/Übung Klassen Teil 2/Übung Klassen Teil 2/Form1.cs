@@ -24,37 +24,35 @@ namespace EpicBattleSimulator
             InitializeComponent();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            DisableButtons();
+        }
+
         int roundcount = 1;
         int poisoncount = 3;
 
 
-        Fighter player = new Fighter("Tim", 120, 100, 10, 10);
-        Fighter enemy = new Fighter("Tork der Ork",150, 150, 10, 8);
+        Fighter player = new Fighter("", 100, 100, 10, 10, 1);
+        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1);
 
-        private void cmdSerialize_Click(object sender, EventArgs e)
+
+        private void UpdateInfo()
         {
-            Serialize();
-            lblAusgabe.Text = $"Gespeichert!";
-              
+            lblPlayerInfo.Text = $"{player.Info()}";
+            lblEnemyInfo.Text = $"{enemy.Info()}";
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Deserialize();
-            lblAusgabe.Text = $"Geladen!";
-        }
-
 
         private void StartProperties()
         {
-            Deserialize();
-            if (player.Name == null)
+            if (player.Name == "")
             {
                 string name = Interaction.InputBox("Gib hier den Namen deines Helden ein!", "Name", "Heldenname");
-                
                 player.Name = name;
             }
-            
+            EnableButtons();
+            lblPlayerInfo.Text = $"{player.Info()}";
+            lblEnemyInfo.Text = $"{enemy.Info()}";
             lblInfo.Text = $"Du kämpfst gegen {enemy.Name}";
             progBarHealth.Maximum = player.MaxLeben;
             progBarEnemy.Maximum = enemy.MaxLeben;
@@ -70,11 +68,14 @@ namespace EpicBattleSimulator
 
         private void EnemyAttacke()
         {
+            int currentdmg = EnemyGesamtschaden();
+
             try
             {
                 lblInfo.Text = $"{enemy.Name} ist dran!\n";
-                lblInfo.Text += $"Er verursacht {EnemyGesamtschaden()} Schaden\n";
-                progBarHealth.Value -= EnemyGesamtschaden();
+                lblInfo.Text += $"Er verursacht {currentdmg} Schaden\n";
+                progBarHealth.Value -= currentdmg;
+                player.Leben -= currentdmg;
                 if (player.Leben > 50 && player.Vergiftet == false)
                 {
                     player.Vergiftet = true;
@@ -84,6 +85,7 @@ namespace EpicBattleSimulator
                 {
                     progBarHealth.Value = -1;
                 }
+                UpdateInfo();
                 timRound2.Enabled = true;
             }
             catch 
@@ -94,13 +96,16 @@ namespace EpicBattleSimulator
 
         private void checkVergiftung()
         {
+            int currentpoison = enemy.Giftschaden;
+
             try
             {
                 if (player.Vergiftet)
                 {
-                    lblInfo.Text += $"Du erleidest {enemy.Giftschaden} Giftschaden!\n";
-                    player.Leben -= enemy.Giftschaden;
-                    progBarHealth.Value -= enemy.Giftschaden;
+                    lblInfo.Text += $"Du erleidest {currentpoison} Giftschaden!\n";
+                    player.Leben -= currentpoison;
+                    progBarHealth.Value -= currentpoison;
+                    UpdateInfo();
                     if (progBarHealth.Value == 0)
                     {
                         progBarHealth.Value -= 1;
@@ -185,6 +190,7 @@ namespace EpicBattleSimulator
             checkVergiftung();
         }
 
+   
         private void beendenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
@@ -192,55 +198,58 @@ namespace EpicBattleSimulator
 
         private void spielLadenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FileStream fs = new FileStream("savegame.txt", FileMode.Open);
-            StreamReader sr = new StreamReader(fs);
-            string zeile;
-
-
-            while (sr.Peek() != -1)
-            {
-                zeile = sr.ReadLine();
-                player.Name = $"{zeile}";
-            }
-            sr.Close();
+            Deserialize();
             StartProperties();
+        }
 
-            MessageBox.Show($"Spielstand {player.Name} erfolgreich geladen!");
+        private void spielSpeichernToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Serialize();
         }
 
         private void neuesSpielToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //player.Name = "";
+            player.Name = "";
             EnableButtons();
             StartProperties();
         }
+     
 
         private void heilungToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            lblInfo.Text = $"Du heilst dich um {PlayerGesamtheilung()} Leben!";
+            int currentheal = PlayerGesamtheilung();
+
+            lblInfo.Text = $"Du heilst dich um {currentheal} Leben!";
             try
             {
-                progBarHealth.Value += PlayerGesamtheilung();
+                progBarHealth.Value += currentheal;
+                player.Leben += currentheal;
             }
             catch
             {
                 progBarHealth.Value = progBarHealth.Maximum;
+                player.Leben = player.MaxLeben;
             }
             DisableButtons();
+            UpdateInfo();
             timRound.Enabled = true;
         }
 
         private void picSwordAttack_Click(object sender, EventArgs e)
         {
-            lblInfo.Text = $"Du verusachst {PlayerGesamtschaden()} Schaden!";
+            int currentdmg = PlayerGesamtschaden();
+
+            lblInfo.Text = $"Du verusachst {currentdmg} Schaden!";
+            enemy.Leben -= currentdmg;
             DisableButtons();
             try
             {
-                progBarEnemy.Value -= PlayerGesamtschaden();
+                progBarEnemy.Value -= currentdmg;
                 if (progBarEnemy.Value == 0)
                 {
                     progBarEnemy.Value -= 1;
                 }
+                UpdateInfo();
                 timRound.Enabled = true;
             }
             catch
@@ -256,17 +265,15 @@ namespace EpicBattleSimulator
 
         public void Serialize()
         {
-            // Create a hashtable of values that will eventually be serialized.
-            // To serialize the hashtable and its key/value pairs,  
-            // you must first open a stream for writing. 
-            // In this case, use a file stream.
+            Fighter saveplayer = new Fighter();
+            saveplayer = player;
             FileStream fs = new FileStream("DataFile.dat", FileMode.Create);
 
             // Construct a BinaryFormatter and use it to serialize the data to the stream.
             BinaryFormatter formatter = new BinaryFormatter();
             try
             {
-                formatter.Serialize(fs, player);
+                formatter.Serialize(fs, saveplayer);
             }
             catch (SerializationException e)
             {
@@ -275,14 +282,14 @@ namespace EpicBattleSimulator
             }
             finally
             {
+                MessageBox.Show($"Spielstand {player.Name} erfolgreich gespeichert!");
                 fs.Close();
             }
         }
 
         public void Deserialize()
         {
-            // Declare the hashtable reference.
-            Fighter player = null;
+            
 
             // Open the file containing the data that you want to deserialize.
             FileStream fs = new FileStream("DataFile.dat", FileMode.Open);
@@ -290,7 +297,6 @@ namespace EpicBattleSimulator
             {
                 BinaryFormatter formatter = new BinaryFormatter();
 
-                // Deserialize the hashtable from the file and 
                 // assign the reference to the local variable.
                 player = (Fighter)formatter.Deserialize(fs);
             }
@@ -301,13 +307,13 @@ namespace EpicBattleSimulator
             }
             finally
             {
+                MessageBox.Show($"Spielstand {player.Name} erfolgreich geladen");
                 fs.Close();
             }
-
-            // To prove that the table deserialized correctly, 
-            // display the key/value pairs.
-
         }
+
+
+
 
     }
 }

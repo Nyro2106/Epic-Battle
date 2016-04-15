@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.progBarHealth = new System.Windows.Forms.ProgressBar();
-            this.lblStatus = new System.Windows.Forms.Label();
             this.progBarEnemy = new System.Windows.Forms.ProgressBar();
             this.lblInfo = new System.Windows.Forms.Label();
             this.timRound = new System.Windows.Forms.Timer(this.components);
@@ -52,9 +51,8 @@
             this.feuerballToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.picSpellbook = new System.Windows.Forms.PictureBox();
             this.picSwordAttack = new System.Windows.Forms.PictureBox();
-            this.cmdSerialize = new System.Windows.Forms.Button();
-            this.lblAusgabe = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.lblPlayerInfo = new System.Windows.Forms.Label();
+            this.lblEnemyInfo = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStripZauberbuch.SuspendLayout();
@@ -64,25 +62,15 @@
             // 
             // progBarHealth
             // 
-            this.progBarHealth.Location = new System.Drawing.Point(52, 91);
+            this.progBarHealth.Location = new System.Drawing.Point(15, 139);
             this.progBarHealth.Name = "progBarHealth";
             this.progBarHealth.Size = new System.Drawing.Size(100, 18);
             this.progBarHealth.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progBarHealth.TabIndex = 2;
             // 
-            // lblStatus
-            // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(16, 319);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(43, 13);
-            this.lblStatus.TabIndex = 4;
-            this.lblStatus.Text = "Status: ";
-            this.lblStatus.Visible = false;
-            // 
             // progBarEnemy
             // 
-            this.progBarEnemy.Location = new System.Drawing.Point(231, 86);
+            this.progBarEnemy.Location = new System.Drawing.Point(357, 134);
             this.progBarEnemy.Name = "progBarEnemy";
             this.progBarEnemy.Size = new System.Drawing.Size(100, 23);
             this.progBarEnemy.TabIndex = 5;
@@ -90,7 +78,7 @@
             // lblInfo
             // 
             this.lblInfo.AutoSize = true;
-            this.lblInfo.Location = new System.Drawing.Point(110, 133);
+            this.lblInfo.Location = new System.Drawing.Point(165, 55);
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.Size = new System.Drawing.Size(28, 13);
             this.lblInfo.TabIndex = 7;
@@ -109,7 +97,7 @@
             // lblPlayer
             // 
             this.lblPlayer.AutoSize = true;
-            this.lblPlayer.Location = new System.Drawing.Point(49, 67);
+            this.lblPlayer.Location = new System.Drawing.Point(12, 55);
             this.lblPlayer.Name = "lblPlayer";
             this.lblPlayer.Size = new System.Drawing.Size(39, 13);
             this.lblPlayer.TabIndex = 8;
@@ -118,7 +106,7 @@
             // lblEnemy
             // 
             this.lblEnemy.AutoSize = true;
-            this.lblEnemy.Location = new System.Drawing.Point(231, 67);
+            this.lblEnemy.Location = new System.Drawing.Point(354, 55);
             this.lblEnemy.Name = "lblEnemy";
             this.lblEnemy.Size = new System.Drawing.Size(42, 13);
             this.lblEnemy.TabIndex = 9;
@@ -157,6 +145,7 @@
             this.spielSpeichernToolStripMenuItem.Name = "spielSpeichernToolStripMenuItem";
             this.spielSpeichernToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.spielSpeichernToolStripMenuItem.Text = "Spiel Speichern";
+            this.spielSpeichernToolStripMenuItem.Click += new System.EventHandler(this.spielSpeichernToolStripMenuItem_Click);
             // 
             // spielLadenToolStripMenuItem
             // 
@@ -223,7 +212,7 @@
             this.picSpellbook.ContextMenuStrip = this.contextMenuStripZauberbuch;
             this.picSpellbook.Image = ((System.Drawing.Image)(resources.GetObject("picSpellbook.Image")));
             this.picSpellbook.InitialImage = ((System.Drawing.Image)(resources.GetObject("picSpellbook.InitialImage")));
-            this.picSpellbook.Location = new System.Drawing.Point(213, 212);
+            this.picSpellbook.Location = new System.Drawing.Point(268, 217);
             this.picSpellbook.Name = "picSpellbook";
             this.picSpellbook.Size = new System.Drawing.Size(54, 62);
             this.picSpellbook.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -233,7 +222,7 @@
             // picSwordAttack
             // 
             this.picSwordAttack.Image = ((System.Drawing.Image)(resources.GetObject("picSwordAttack.Image")));
-            this.picSwordAttack.Location = new System.Drawing.Point(113, 214);
+            this.picSwordAttack.Location = new System.Drawing.Point(168, 219);
             this.picSwordAttack.Name = "picSwordAttack";
             this.picSwordAttack.Size = new System.Drawing.Size(68, 60);
             this.picSwordAttack.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -241,43 +230,31 @@
             this.picSwordAttack.TabStop = false;
             this.picSwordAttack.Click += new System.EventHandler(this.picSwordAttack_Click);
             // 
-            // cmdSerialize
+            // lblPlayerInfo
             // 
-            this.cmdSerialize.Location = new System.Drawing.Point(378, 319);
-            this.cmdSerialize.Name = "cmdSerialize";
-            this.cmdSerialize.Size = new System.Drawing.Size(75, 23);
-            this.cmdSerialize.TabIndex = 21;
-            this.cmdSerialize.Text = "Serialisieren";
-            this.cmdSerialize.UseVisualStyleBackColor = true;
-            this.cmdSerialize.Click += new System.EventHandler(this.cmdSerialize_Click);
+            this.lblPlayerInfo.AutoSize = true;
+            this.lblPlayerInfo.Location = new System.Drawing.Point(12, 68);
+            this.lblPlayerInfo.Name = "lblPlayerInfo";
+            this.lblPlayerInfo.Size = new System.Drawing.Size(28, 13);
+            this.lblPlayerInfo.TabIndex = 22;
+            this.lblPlayerInfo.Text = "Info:";
             // 
-            // lblAusgabe
+            // lblEnemyInfo
             // 
-            this.lblAusgabe.AutoSize = true;
-            this.lblAusgabe.Location = new System.Drawing.Point(177, 381);
-            this.lblAusgabe.Name = "lblAusgabe";
-            this.lblAusgabe.Size = new System.Drawing.Size(49, 13);
-            this.lblAusgabe.TabIndex = 22;
-            this.lblAusgabe.Text = "Ausgabe";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(378, 370);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 23);
-            this.button1.TabIndex = 23;
-            this.button1.Text = "Deserialisieren";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.lblEnemyInfo.AutoSize = true;
+            this.lblEnemyInfo.Location = new System.Drawing.Point(354, 68);
+            this.lblEnemyInfo.Name = "lblEnemyInfo";
+            this.lblEnemyInfo.Size = new System.Drawing.Size(28, 13);
+            this.lblEnemyInfo.TabIndex = 23;
+            this.lblEnemyInfo.Text = "Info:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 486);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.lblAusgabe);
-            this.Controls.Add(this.cmdSerialize);
+            this.Controls.Add(this.lblEnemyInfo);
+            this.Controls.Add(this.lblPlayerInfo);
             this.Controls.Add(this.picSwordAttack);
             this.Controls.Add(this.picSpellbook);
             this.Controls.Add(this.statusStrip1);
@@ -285,12 +262,12 @@
             this.Controls.Add(this.lblPlayer);
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.progBarEnemy);
-            this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.progBarHealth);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Epic Battle Simulator v0.3";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -305,7 +282,6 @@
 
         #endregion
         private System.Windows.Forms.ProgressBar progBarHealth;
-        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.ProgressBar progBarEnemy;
         private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.Timer timRound;
@@ -326,9 +302,8 @@
         private System.Windows.Forms.ToolStripMenuItem feuerballToolStripMenuItem;
         private System.Windows.Forms.PictureBox picSpellbook;
         private System.Windows.Forms.PictureBox picSwordAttack;
-        private System.Windows.Forms.Button cmdSerialize;
-        private System.Windows.Forms.Label lblAusgabe;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label lblPlayerInfo;
+        private System.Windows.Forms.Label lblEnemyInfo;
     }
 }
 
