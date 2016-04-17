@@ -53,6 +53,7 @@
             this.picSwordAttack = new System.Windows.Forms.PictureBox();
             this.lblPlayerInfo = new System.Windows.Forms.Label();
             this.lblEnemyInfo = new System.Windows.Forms.Label();
+            this.lblSQL = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStripZauberbuch.SuspendLayout();
@@ -248,11 +249,21 @@
             this.lblEnemyInfo.TabIndex = 23;
             this.lblEnemyInfo.Text = "Info:";
             // 
+            // lblSQL
+            // 
+            this.lblSQL.AutoSize = true;
+            this.lblSQL.Location = new System.Drawing.Point(52, 338);
+            this.lblSQL.Name = "lblSQL";
+            this.lblSQL.Size = new System.Drawing.Size(35, 13);
+            this.lblSQL.TabIndex = 24;
+            this.lblSQL.Text = "label1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 486);
+            this.Controls.Add(this.lblSQL);
             this.Controls.Add(this.lblEnemyInfo);
             this.Controls.Add(this.lblPlayerInfo);
             this.Controls.Add(this.picSwordAttack);
@@ -266,7 +277,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Epic Battle Simulator v0.3";
+            this.Text = "Epic Battle Simulator v0.5";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -304,6 +315,7 @@
         private System.Windows.Forms.PictureBox picSwordAttack;
         private System.Windows.Forms.Label lblPlayerInfo;
         private System.Windows.Forms.Label lblEnemyInfo;
+        private System.Windows.Forms.Label lblSQL;
     }
 }
 

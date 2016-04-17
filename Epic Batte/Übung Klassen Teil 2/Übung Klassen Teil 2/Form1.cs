@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
+using System.Data.OleDb;
 
 namespace EpicBattleSimulator
 {
@@ -27,15 +28,18 @@ namespace EpicBattleSimulator
         private void Form1_Load(object sender, EventArgs e)
         {
             DisableButtons();
+            GenerateEnemy();
         }
+
+
 
         int roundcount = 1;
         int poisoncount = 3;
+        Random rand = new Random();
 
 
-        Fighter player = new Fighter("", 100, 100, 10, 10, 1);
-        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1);
-        Fighter figgy = new Fighter();
+        Fighter player = new Fighter("", 100, 100, 10, 10, 1, 1);
+        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1, 1);
 
 
         private void UpdateInfo()
@@ -52,18 +56,37 @@ namespace EpicBattleSimulator
                 player.Name = name;
             }
             EnableButtons();
+            player.Vergiftet = false;
+            checkVergiftung();
             lblPlayerInfo.Text = $"{player.Info()}";
             lblEnemyInfo.Text = $"{enemy.Info()}";
             lblInfo.Text = $"Du kämpfst gegen {enemy.Name}";
             progBarHealth.Maximum = player.MaxLeben;
             progBarEnemy.Maximum = enemy.MaxLeben;
-            progBarHealth.Value = progBarHealth.Maximum;
-            progBarEnemy.Value = progBarEnemy.Maximum;
+            progBarHealth.Value = player.MaxLeben;
+            progBarEnemy.Value = enemy.MaxLeben;
             player.Leben = player.MaxLeben;
             enemy.Leben = enemy.MaxLeben;
             lblPlayer.Text = $"{player.Name}";
             lblEnemy.Text = $"{enemy.Name}";
-            lblStatus.Text = "";
+            poisoncount = 3;
+            UpdateInfo();
+        }
+
+        private void LoadProperties()
+        {
+            EnableButtons();
+            player.Vergiftet = player.Vergiftet;
+            lblPlayerInfo.Text = $"{player.Info()}";
+            lblEnemyInfo.Text = $"{enemy.Info()}";
+            progBarHealth.Maximum = player.MaxLeben;
+            progBarEnemy.Maximum = enemy.MaxLeben;
+            progBarHealth.Value = player.Leben;
+            progBarEnemy.Value = enemy.Leben;
+            player.Leben = player.Leben;
+            enemy.Leben = enemy.Leben;
+            lblPlayer.Text = $"{player.Name}";
+            lblEnemy.Text = $"{enemy.Name}";
             poisoncount = 3;
         }
 
@@ -89,7 +112,7 @@ namespace EpicBattleSimulator
                 UpdateInfo();
                 timRound2.Enabled = true;
             }
-            catch 
+            catch
             {
                 playerDefeated();
             }
@@ -114,13 +137,14 @@ namespace EpicBattleSimulator
                     poisoncount -= 1;
                     toolStripStatusLbLBottom.Text = $"Status: Vergiftet!";
                     toolStripStatusLeisteBottom.Value = poisoncount;
-                    
+
                 }
-                if (poisoncount == 0)
+                if (poisoncount == 0 || player.Vergiftet == false)
                 {
                     player.Vergiftet = false;
                     poisoncount = 3;
                     toolStripStatusLbLBottom.Text = $"Status: Normal";
+                    toolStripStatusLeisteBottom.Value = 0;
                     lblInfo.Text += "Du bist nichtmehr vergiftet!\n";
                 }
             }
@@ -183,7 +207,7 @@ namespace EpicBattleSimulator
 
         private void timRound2_Tick(object sender, EventArgs e)
         {
-            lblInfo.Text = ""; 
+            lblInfo.Text = "";
             roundcount += 1;
             lblInfo.Text += $"Du bist dran! \nEs ist Runde: {roundcount}\n";
             timRound2.Enabled = false;
@@ -191,7 +215,7 @@ namespace EpicBattleSimulator
             checkVergiftung();
         }
 
-   
+
         private void beendenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
@@ -199,13 +223,32 @@ namespace EpicBattleSimulator
 
         private void spielLadenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Deserialize();
-            StartProperties();
+            DialogResult dr = MessageBox.Show("Soll das Spiel geladen werden?", "Spiel laden?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dr == DialogResult.Yes)
+            {
+                Deserialize();
+                DeserializeEnemy();
+                LoadProperties();
+            }
+            else
+            {
+                return;
+            }
         }
 
         private void spielSpeichernToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Serialize();
+            DialogResult dr = MessageBox.Show("Soll der Spielstand gespeichert werden?", "Spiel Speichern?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr == DialogResult.Yes)
+            {
+                Serialize();
+                SerializeEnemy();
+            }
+            else
+            {
+                return;
+            }
         }
 
         private void neuesSpielToolStripMenuItem_Click(object sender, EventArgs e)
@@ -214,7 +257,7 @@ namespace EpicBattleSimulator
             EnableButtons();
             StartProperties();
         }
-     
+
 
         private void heilungToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -267,48 +310,109 @@ namespace EpicBattleSimulator
         {
             Fighter saveplayer = new Fighter();
             saveplayer = player;
-            FileStream fs = new FileStream("DataFile.dat", FileMode.Create);
+            FileStream fs = new FileStream("PlayerFile.dat", FileMode.Create);
 
-            // Construct a BinaryFormatter and use it to serialize the data to the stream.
             BinaryFormatter formatter = new BinaryFormatter();
             try
             {
                 formatter.Serialize(fs, saveplayer);
+                MessageBox.Show($"Spielstand '{player.Name}' erfolgreich gespeichert!");
             }
             catch (SerializationException e)
             {
-                Console.WriteLine("Failed to serialize. Reason: " + e.Message);
-                throw;
+                MessageBox.Show($"Spielstand konnte nicht gespeichert werden!");
+                return;
             }
             finally
             {
-                MessageBox.Show($"Spielstand {player.Name} erfolgreich gespeichert!");
+                fs.Close();
+            }
+        }
+
+        public void SerializeEnemy()
+        {
+            Fighter saveenemy = new Fighter();
+            saveenemy = enemy;
+            FileStream fs = new FileStream("EnemyFile.dat", FileMode.Create);
+
+            BinaryFormatter formatter = new BinaryFormatter();
+            try
+            {
+                formatter.Serialize(fs, saveenemy);
+            }
+            catch (SerializationException e)
+            {
+                return;
+            }
+            finally
+            {
                 fs.Close();
             }
         }
 
         public void Deserialize()
         {
-            
 
-            // Open the file containing the data that you want to deserialize.
-            FileStream fs = new FileStream("DataFile.dat", FileMode.Open);
             try
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-
-                // assign the reference to the local variable.
+                FileStream fs = new FileStream("PlayerFile.dat", FileMode.Open);
                 player = (Fighter)formatter.Deserialize(fs);
-            }
-            catch (SerializationException e)
-            {
-                Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
-                throw;
-            }
-            finally
-            {
-                MessageBox.Show($"Spielstand {player.Name} erfolgreich geladen");
+                MessageBox.Show($"Spielstand '{player.Name}' erfolgreich geladen");
                 fs.Close();
+            }
+            catch
+            {
+                MessageBox.Show($"Spielstand konnte nicht geladen werden!");
+                return;
+            }
+        }
+
+        public void DeserializeEnemy()
+        {
+
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream fs = new FileStream("EnemyFile.dat", FileMode.Open);
+                enemy = (Fighter)formatter.Deserialize(fs);
+                fs.Close();
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        private void GenerateEnemy()
+        {
+            OleDbConnection con = new OleDbConnection();
+            OleDbCommand cmd = new OleDbCommand();
+            OleDbDataReader reader;
+
+            con.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=D:/Databases/Enemies.accdb";
+
+            cmd.Connection = con;
+            cmd.CommandText = $"SELECT * FROM enemies WHERE id = {rand.Next(1,4)}";
+
+            try
+            {
+                con.Open();
+
+                reader = cmd.ExecuteReader();
+                lblSQL.Text = "";
+                while (reader.Read())
+                {
+                    lblSQL.Text += (reader["ename"] + " ist level " + reader["elevel"]);
+                }
+                reader.Close();
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+
             }
         }
 

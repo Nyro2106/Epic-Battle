@@ -20,9 +20,10 @@ namespace EpicBattleSimulator
         private int zaubermacht;
         private int level;
         private bool poisoned = false;
+        private int roundcount;
         Random randy = new Random();
 
-        public Fighter(string nam, int maxl, int life, int attack, int zm, int lvl)
+        public Fighter(string nam, int maxl, int life, int attack, int zm, int lvl, int round)
         {
             name = nam;
             maxleben = maxl;
@@ -30,6 +31,7 @@ namespace EpicBattleSimulator
             attacke = attack;
             zaubermacht = zm;
             level = lvl;
+            roundcount = round;
 
         }
 
@@ -40,9 +42,10 @@ namespace EpicBattleSimulator
 
         public string Info()
         {
-            return $"Leben: {this.maxleben} / {this.leben}\n" +
+            return $"Leben: {this.leben} / {this.maxleben}\n" +
                     $"Angriff: {this.Attacke}\n" +
-                  $"Zaubermacht: {this.Zaubermacht}";
+                  $"Zaubermacht: {this.Zaubermacht}\n" +
+                  $"Level: {this.Level}";
         }
 
 
@@ -67,6 +70,18 @@ namespace EpicBattleSimulator
             set
             {
                 level = value;
+            }
+        }
+
+        public int Round
+        {
+            get
+            {
+                return roundcount;
+            }
+            set
+            {
+                roundcount = value;
             }
         }
 
