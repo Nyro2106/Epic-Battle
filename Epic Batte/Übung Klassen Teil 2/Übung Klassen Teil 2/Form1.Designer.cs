@@ -53,7 +53,6 @@
             this.picSwordAttack = new System.Windows.Forms.PictureBox();
             this.lblPlayerInfo = new System.Windows.Forms.Label();
             this.lblEnemyInfo = new System.Windows.Forms.Label();
-            this.lblSQL = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStripZauberbuch.SuspendLayout();
@@ -63,7 +62,7 @@
             // 
             // progBarHealth
             // 
-            this.progBarHealth.Location = new System.Drawing.Point(15, 139);
+            this.progBarHealth.Location = new System.Drawing.Point(52, 140);
             this.progBarHealth.Name = "progBarHealth";
             this.progBarHealth.Size = new System.Drawing.Size(100, 18);
             this.progBarHealth.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -71,7 +70,7 @@
             // 
             // progBarEnemy
             // 
-            this.progBarEnemy.Location = new System.Drawing.Point(357, 134);
+            this.progBarEnemy.Location = new System.Drawing.Point(394, 135);
             this.progBarEnemy.Name = "progBarEnemy";
             this.progBarEnemy.Size = new System.Drawing.Size(100, 23);
             this.progBarEnemy.TabIndex = 5;
@@ -79,7 +78,7 @@
             // lblInfo
             // 
             this.lblInfo.AutoSize = true;
-            this.lblInfo.Location = new System.Drawing.Point(165, 55);
+            this.lblInfo.Location = new System.Drawing.Point(196, 56);
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.Size = new System.Drawing.Size(28, 13);
             this.lblInfo.TabIndex = 7;
@@ -98,7 +97,7 @@
             // lblPlayer
             // 
             this.lblPlayer.AutoSize = true;
-            this.lblPlayer.Location = new System.Drawing.Point(12, 55);
+            this.lblPlayer.Location = new System.Drawing.Point(49, 56);
             this.lblPlayer.Name = "lblPlayer";
             this.lblPlayer.Size = new System.Drawing.Size(39, 13);
             this.lblPlayer.TabIndex = 8;
@@ -107,7 +106,7 @@
             // lblEnemy
             // 
             this.lblEnemy.AutoSize = true;
-            this.lblEnemy.Location = new System.Drawing.Point(354, 55);
+            this.lblEnemy.Location = new System.Drawing.Point(391, 56);
             this.lblEnemy.Name = "lblEnemy";
             this.lblEnemy.Size = new System.Drawing.Size(42, 13);
             this.lblEnemy.TabIndex = 9;
@@ -213,7 +212,7 @@
             this.picSpellbook.ContextMenuStrip = this.contextMenuStripZauberbuch;
             this.picSpellbook.Image = ((System.Drawing.Image)(resources.GetObject("picSpellbook.Image")));
             this.picSpellbook.InitialImage = ((System.Drawing.Image)(resources.GetObject("picSpellbook.InitialImage")));
-            this.picSpellbook.Location = new System.Drawing.Point(268, 217);
+            this.picSpellbook.Location = new System.Drawing.Point(281, 234);
             this.picSpellbook.Name = "picSpellbook";
             this.picSpellbook.Size = new System.Drawing.Size(54, 62);
             this.picSpellbook.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -223,7 +222,7 @@
             // picSwordAttack
             // 
             this.picSwordAttack.Image = ((System.Drawing.Image)(resources.GetObject("picSwordAttack.Image")));
-            this.picSwordAttack.Location = new System.Drawing.Point(168, 219);
+            this.picSwordAttack.Location = new System.Drawing.Point(181, 236);
             this.picSwordAttack.Name = "picSwordAttack";
             this.picSwordAttack.Size = new System.Drawing.Size(68, 60);
             this.picSwordAttack.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -234,7 +233,7 @@
             // lblPlayerInfo
             // 
             this.lblPlayerInfo.AutoSize = true;
-            this.lblPlayerInfo.Location = new System.Drawing.Point(12, 68);
+            this.lblPlayerInfo.Location = new System.Drawing.Point(49, 69);
             this.lblPlayerInfo.Name = "lblPlayerInfo";
             this.lblPlayerInfo.Size = new System.Drawing.Size(28, 13);
             this.lblPlayerInfo.TabIndex = 22;
@@ -243,27 +242,17 @@
             // lblEnemyInfo
             // 
             this.lblEnemyInfo.AutoSize = true;
-            this.lblEnemyInfo.Location = new System.Drawing.Point(354, 68);
+            this.lblEnemyInfo.Location = new System.Drawing.Point(391, 69);
             this.lblEnemyInfo.Name = "lblEnemyInfo";
             this.lblEnemyInfo.Size = new System.Drawing.Size(28, 13);
             this.lblEnemyInfo.TabIndex = 23;
             this.lblEnemyInfo.Text = "Info:";
-            // 
-            // lblSQL
-            // 
-            this.lblSQL.AutoSize = true;
-            this.lblSQL.Location = new System.Drawing.Point(52, 338);
-            this.lblSQL.Name = "lblSQL";
-            this.lblSQL.Size = new System.Drawing.Size(35, 13);
-            this.lblSQL.TabIndex = 24;
-            this.lblSQL.Text = "label1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 486);
-            this.Controls.Add(this.lblSQL);
             this.Controls.Add(this.lblEnemyInfo);
             this.Controls.Add(this.lblPlayerInfo);
             this.Controls.Add(this.picSwordAttack);
@@ -277,7 +266,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Epic Battle Simulator v0.5";
+            this.Text = "Epic Battle Simulator v0.6";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -315,7 +304,6 @@
         private System.Windows.Forms.PictureBox picSwordAttack;
         private System.Windows.Forms.Label lblPlayerInfo;
         private System.Windows.Forms.Label lblEnemyInfo;
-        private System.Windows.Forms.Label lblSQL;
     }
 }
 

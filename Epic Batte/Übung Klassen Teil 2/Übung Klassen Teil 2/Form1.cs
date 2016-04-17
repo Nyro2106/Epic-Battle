@@ -28,7 +28,7 @@ namespace EpicBattleSimulator
         private void Form1_Load(object sender, EventArgs e)
         {
             DisableButtons();
-            GenerateEnemy();
+
         }
 
 
@@ -38,8 +38,8 @@ namespace EpicBattleSimulator
         Random rand = new Random();
 
 
-        Fighter player = new Fighter("", 100, 100, 10, 10, 1, 1);
-        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1, 1);
+        Fighter player = new Fighter("", 100, 100, 10, 10, 1, 1, 0, 80);
+        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1, 1, 0, 100);
 
 
         private void UpdateInfo()
@@ -55,6 +55,8 @@ namespace EpicBattleSimulator
                 string name = Interaction.InputBox("Gib hier den Namen deines Helden ein!", "Name", "Heldenname");
                 player.Name = name;
             }
+            UpdateInfo();
+            GenerateEnemy();
             EnableButtons();
             player.Vergiftet = false;
             checkVergiftung();
@@ -97,7 +99,7 @@ namespace EpicBattleSimulator
             try
             {
                 lblInfo.Text = $"{enemy.Name} ist dran!\n";
-                lblInfo.Text += $"Er verursacht {currentdmg} Schaden\n";
+                lblInfo.Text += $"und verursacht {currentdmg} Schaden\n";
                 progBarHealth.Value -= currentdmg;
                 player.Leben -= currentdmg;
                 if (player.Leben > 50 && player.Vergiftet == false)
@@ -115,8 +117,11 @@ namespace EpicBattleSimulator
             catch
             {
                 playerDefeated();
+                playAgain();
             }
         }
+
+
 
         private void checkVergiftung()
         {
@@ -162,6 +167,19 @@ namespace EpicBattleSimulator
             DisableButtons();
             lblInfo.Text += "Du wurdest besiegt!";
             return;
+        }
+
+        private void playAgain()
+        {
+            DialogResult dr = MessageBox.Show("Weiterkämpfen?", "Determination", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr == DialogResult.Yes)
+            {
+                StartProperties();
+            }
+            else
+            {
+                return;
+            }
         }
 
         private void disableTimers()
@@ -302,9 +320,37 @@ namespace EpicBattleSimulator
                 progBarEnemy.Value = progBarEnemy.Minimum;
                 DisableButtons();
                 lblInfo.Text = $"{enemy.Name} wurde besiegt!";
+                playAgain();
+                getEXP();
+                UpdateInfo();
             }
         }
 
+        private void getEXP()
+        {
+            bool levelup = false;
+            
+
+            player.Experience += 120;
+            
+
+            if (player.Experience >= player.MaxExperience)
+            {
+                
+                player.Level += 1;
+                player.Experience = player.Experience - player.MaxExperience;
+                levelup = true;
+            }
+            if (levelup == true)
+            {
+                player.MaxExperience += 50;
+                player.Leben += 30;
+                player.MaxLeben += 30;
+                player.Attacke += 6;
+                player.Zaubermacht += 3;
+                levelup = false;
+            }
+        }
 
         public void Serialize()
         {
@@ -393,17 +439,25 @@ namespace EpicBattleSimulator
             con.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=D:/Databases/Enemies.accdb";
 
             cmd.Connection = con;
-            cmd.CommandText = $"SELECT * FROM enemies WHERE id = {rand.Next(1,4)}";
+            cmd.CommandText = $"SELECT * FROM enemies WHERE id = {rand.Next(1,6)}";
+            //cmd.CommandText = $"SELECT * FROM enemies WHERE level = {player.Level}";
 
             try
             {
                 con.Open();
 
                 reader = cmd.ExecuteReader();
-                lblSQL.Text = "";
+                
                 while (reader.Read())
                 {
-                    lblSQL.Text += (reader["ename"] + " ist level " + reader["elevel"]);
+                    
+                    enemy.Name = $"{reader["fullname"]}";
+                    enemy.Leben = (int)reader["leben"];
+                    enemy.MaxLeben = (int)reader["maxleben"];
+                    enemy.Attacke = (int)reader["attacke"];
+                    enemy.Zaubermacht = (int)reader["zaubermacht"];
+                    enemy.Level = (int)reader["level"];
+
                 }
                 reader.Close();
                 con.Close();

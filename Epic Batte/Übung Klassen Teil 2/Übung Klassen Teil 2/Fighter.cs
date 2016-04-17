@@ -21,9 +21,11 @@ namespace EpicBattleSimulator
         private int level;
         private bool poisoned = false;
         private int roundcount;
+        private int experience;
+        private int maxexperience;
         Random randy = new Random();
 
-        public Fighter(string nam, int maxl, int life, int attack, int zm, int lvl, int round)
+        public Fighter(string nam, int maxl, int life, int attack, int zm, int lvl, int round, int exp, int maxexp)
         {
             name = nam;
             maxleben = maxl;
@@ -32,6 +34,8 @@ namespace EpicBattleSimulator
             zaubermacht = zm;
             level = lvl;
             roundcount = round;
+            experience = exp;
+            maxexperience = maxexp;
 
         }
 
@@ -45,6 +49,7 @@ namespace EpicBattleSimulator
             return $"Leben: {this.leben} / {this.maxleben}\n" +
                     $"Angriff: {this.Attacke}\n" +
                   $"Zaubermacht: {this.Zaubermacht}\n" +
+                  $"Erfahrung: {this.experience} / {this.maxexperience}\n" +
                   $"Level: {this.Level}";
         }
 
@@ -58,6 +63,30 @@ namespace EpicBattleSimulator
             set
             {
                 randy.Next(value, value);
+            }
+        }
+
+        public int Experience
+        {
+            get
+            {
+                return experience;
+            }
+            set
+            {
+                experience = value;
+            }
+        }
+
+        public int MaxExperience
+        {
+            get
+            {
+                return maxexperience;
+            }
+            set
+            {
+                maxexperience = value;
             }
         }
 
