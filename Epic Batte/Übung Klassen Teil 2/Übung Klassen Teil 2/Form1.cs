@@ -28,9 +28,7 @@ namespace EpicBattleSimulator
         private void Form1_Load(object sender, EventArgs e)
         {
             DisableButtons();
-
         }
-
 
 
         int roundcount = 1;
@@ -40,7 +38,7 @@ namespace EpicBattleSimulator
 
 
         Fighter player = new Fighter("", 180, 180, 20, 10, 1, 1, 0, 80, false);
-        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1, 1, 0, 100, false);
+        Fighter enemy = new Fighter();
 
 
         private void UpdateInfo()
@@ -55,6 +53,7 @@ namespace EpicBattleSimulator
             {
                 string name = Interaction.InputBox("Gib hier den Namen deines Helden ein!", "Name", "Heldenname");
                 player.Name = name;
+                
             }
             GenerateEnemy();
             EnableButtons();
@@ -93,7 +92,7 @@ namespace EpicBattleSimulator
 
         private void EnemyAttacke()
         {
-            int currentdmg = EnemyGesamtschaden();
+            int currentdmg = enemy.Gesamtschaden();
 
             try
             {
@@ -161,11 +160,11 @@ namespace EpicBattleSimulator
         {
             progBarHealth.Value = progBarHealth.Minimum;
             DisableButtons();
-            defeated = true;
-            getEXP();
+            lblInfo.Text += "Du wurdest besiegt!";
             timRound.Enabled = false;
             timRound2.Enabled = false;
-            lblInfo.Text += "Du wurdest besiegt!";
+            defeated = true;
+            getEXP();
             return;
         }
 
@@ -186,21 +185,6 @@ namespace EpicBattleSimulator
         {
             timRound.Enabled = false;
             timRound2.Enabled = false;
-        }
-
-        private int EnemyGesamtschaden()
-        {
-            return enemy.Attacke + enemy.Bonusschaden;
-        }
-
-        private int PlayerGesamtschaden()
-        {
-            return player.Attacke + player.Bonusschaden;
-        }
-
-        private int PlayerGesamtheilung()
-        {
-            return player.Zaubermacht + player.Bonusheilung;
         }
 
         private void DisableButtons()
@@ -283,7 +267,7 @@ namespace EpicBattleSimulator
 
         private void heilungToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int currentheal = PlayerGesamtheilung();
+            int currentheal = player.Gesamtheilung();
 
             lblInfo.Text = $"Du heilst dich um {currentheal} Leben!";
             try
@@ -302,7 +286,7 @@ namespace EpicBattleSimulator
 
         private void picSwordAttack_Click(object sender, EventArgs e)
         {
-            int currentdmg = PlayerGesamtschaden();
+            int currentdmg = player.Gesamtschaden();
 
             lblInfo.Text = $"Du verusachst {currentdmg} Schaden!";
             enemy.Leben -= currentdmg;
@@ -329,35 +313,23 @@ namespace EpicBattleSimulator
 
         private void getEXP()
         {
-            bool levelup = false;
-            int bonus = enemy.Leben / 100 * 120;
+            int good_exp = enemy.MaxLeben / 100 * 120;
+            int bad_exp = enemy.MaxLeben / 100 * 20;
             
             if (defeated)
             {
-                player.Experience += enemy.Leben / 100 * 20;
+                player.Experience += bad_exp;
                 defeated = false;
             }
             else
             {
-                player.Experience += enemy.Leben + bonus;
+                player.Experience += good_exp;
             }
             
-
             if (player.Experience >= player.MaxExperience)
             {
-                
-                player.Level += 1;
                 player.Experience = player.Experience - player.MaxExperience;
-                levelup = true;
-            }
-            if (levelup == true)
-            {
-                player.MaxExperience += 50;
-                player.Leben += 30;
-                player.MaxLeben += 30;
-                player.Attacke += 6;
-                player.Zaubermacht += 3;
-                levelup = false;
+                player.LevelUp();
             }
         }
 

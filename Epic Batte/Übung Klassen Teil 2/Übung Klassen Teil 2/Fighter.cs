@@ -7,51 +7,38 @@ using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Windows.Forms;
 
 namespace EpicBattleSimulator
 {
     [Serializable()]
     class Fighter
     {
-        private string name;
-        private int leben;
-        private int maxleben;
-        private int attacke;
-        private int zaubermacht;
-        private int level;
-        private bool poisoned = false;
-        private bool venomous = false;
-        private int roundcount;
-        private int experience;
-        private int maxexperience;
         Random randy = new Random();
 
-        public Fighter(string nam, int maxl, int life, int attack, int zm, int lvl, int round, int exp, int maxexp, bool ven)
+        public Fighter(string name, int maxl, int life, int attack, int zm, int lvl, int round, int exp, int maxexp, bool ven)
         {
-            name = nam;
-            maxleben = maxl;
-            leben = life;
-            attacke = attack;
-            zaubermacht = zm;
-            level = lvl;
-            roundcount = round;
-            experience = exp;
-            maxexperience = maxexp;
-            venomous = ven;
+            Name = name;
+            MaxLeben = maxl;
+            Leben = life;
+            Attacke = attack;
+            Zaubermacht = zm;
+            Level = lvl;
+            Roundcount = round;
+            Experience = exp;
+            MaxExperience = maxexp;
+            isVenomous = ven;
         }
 
-        public Fighter()
-        {
-
-        }
+        public Fighter() { }
 
         public string Info()
         {
-            return $"Leben: {this.leben} / {this.maxleben}\n" +
-                    $"Angriff: {this.Attacke}\n" +
-                  $"Zaubermacht: {this.Zaubermacht}\n" +
-                  $"Erfahrung: {this.experience} / {this.maxexperience}\n" +
-                  $"Level: {this.Level}";
+            return $"Leben: {Leben} / {MaxLeben}\n" +
+                    $"Angriff: {Attacke}\n" +
+                  $"Zaubermacht: {Zaubermacht}\n" +
+                  $"Erfahrung: {Experience} / {MaxExperience}\n" +
+                  $"Level: {Level}";
         }
 
 
@@ -67,66 +54,6 @@ namespace EpicBattleSimulator
             }
         }
 
-        public int Experience
-        {
-            get
-            {
-                return experience;
-            }
-            set
-            {
-                experience = value;
-            }
-        }
-
-        public int MaxExperience
-        {
-            get
-            {
-                return maxexperience;
-            }
-            set
-            {
-                maxexperience = value;
-            }
-        }
-
-        public int Level
-        {
-            get
-            {
-                return level;
-            }
-            set
-            {
-                level = value;
-            }
-        }
-
-        public int Round
-        {
-            get
-            {
-                return roundcount;
-            }
-            set
-            {
-                roundcount = value;
-            }
-        }
-
-        public int MaxLeben
-        {
-            get
-            {
-                return maxleben;
-            }
-            set
-            {
-                maxleben = value;
-            }
-        }
-
         public int Giftschaden
         {
             get
@@ -138,31 +65,6 @@ namespace EpicBattleSimulator
                 randy.Next(value, value);
             }
         }
-
-        public bool Vergiftet
-        {
-            get
-            {
-                return poisoned;
-            }
-            set
-            {
-                poisoned = value;
-            }
-        }
-
-        public bool isVenomous
-        {
-            get
-            {
-                return venomous;
-            }
-            set
-            {
-                venomous = value;
-            }
-        }
-
 
         public int Bonusheilung
         {
@@ -176,57 +78,53 @@ namespace EpicBattleSimulator
             }
         }
 
-        public string Name
+        public void LevelUp()
         {
-            get
-            {
-                return name;
-            }
+            int bonusstat = randy.Next(2, 7);
+            int bonushp = randy.Next(5, 20);
 
-            set
-            {
-                name = value;
-            }
-        }
+            MessageBox.Show($"Du bist eine Stufe aufgestiegen:\nNeues Level: {Level + 1}\n" +
+                $"Leben + {30 + bonushp}\n" +
+                $"Attacke + {6 + bonusstat}\n" +
+                $"Zaubermacht + {3 + bonusstat}\n");
 
-        public int Leben
-        {
-            get
-            {
-                return leben;
-            }
+            Level += 1;
+            MaxExperience += 50;
+            Leben += 30 + bonushp;
+            MaxLeben += 30 + bonushp;
+            Attacke += 6 + bonusstat;
+            Zaubermacht += 3 + bonusstat;
+
             
-            set
-            {
-                leben = value;
-            }
         }
 
-        public int Attacke
-        {
-            get
-            {
-                return attacke;
-            }
+        public int Gesamtschaden() => Attacke + Bonusschaden;
 
-            set
-            {
-                attacke = value;
-            }
-        }
+        public int Gesamtheilung() => Zaubermacht + Bonusheilung;
 
-        public int Zaubermacht
-        {
-            get
-            {
-                return zaubermacht;
-            }
+        public int Experience { get; set; }
 
-            set
-            {
-                zaubermacht = value;
-            }
-        }
+        public int MaxExperience { get; set; }
+
+        public int Level { get; set; }
+
+        public int Round { get; set; }
+
+        public int MaxLeben { get; set; }
+
+        public bool Vergiftet { get; set; }
+
+        public bool isVenomous { get; set; }
+
+        public string Name { get; set; }
+
+        public int Leben { get; set; }
+
+        public int Attacke { get; set; }
+
+        public int Zaubermacht { get; set; }
+
+        public int Roundcount { get; set; }
 
     }
 }
