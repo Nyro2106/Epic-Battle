@@ -54,6 +54,7 @@
             this.lblPlayerInfo = new System.Windows.Forms.Label();
             this.lblEnemyInfo = new System.Windows.Forms.Label();
             this.timUpdateStats = new System.Windows.Forms.Timer(this.components);
+            this.cmdGoToCity = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStripZauberbuch.SuspendLayout();
@@ -254,11 +255,22 @@
             this.timUpdateStats.Enabled = true;
             this.timUpdateStats.Tick += new System.EventHandler(this.timUpdateStats_Tick);
             // 
+            // cmdGoToCity
+            // 
+            this.cmdGoToCity.Location = new System.Drawing.Point(13, 408);
+            this.cmdGoToCity.Name = "cmdGoToCity";
+            this.cmdGoToCity.Size = new System.Drawing.Size(75, 23);
+            this.cmdGoToCity.TabIndex = 24;
+            this.cmdGoToCity.Text = "In die Stadt";
+            this.cmdGoToCity.UseVisualStyleBackColor = true;
+            this.cmdGoToCity.Click += new System.EventHandler(this.cmdGoToCity_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 486);
+            this.Controls.Add(this.cmdGoToCity);
             this.Controls.Add(this.lblEnemyInfo);
             this.Controls.Add(this.lblPlayerInfo);
             this.Controls.Add(this.picSwordAttack);
@@ -272,7 +284,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Epic Battle Simulator v0.6";
+            this.Text = "Epic Battle Simulator v0.6.3";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -311,6 +323,7 @@
         private System.Windows.Forms.Label lblPlayerInfo;
         private System.Windows.Forms.Label lblEnemyInfo;
         private System.Windows.Forms.Timer timUpdateStats;
+        private System.Windows.Forms.Button cmdGoToCity;
     }
 }
 

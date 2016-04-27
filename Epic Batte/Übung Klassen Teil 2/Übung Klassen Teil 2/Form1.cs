@@ -15,6 +15,7 @@ using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Data.OleDb;
+using Epic_Battle_Simulator;
 
 namespace EpicBattleSimulator
 {
@@ -71,6 +72,7 @@ namespace EpicBattleSimulator
             lblPlayer.Text = $"{player.Name}";
             lblEnemy.Text = $"{enemy.Name}";
             poisoncount = 3;
+            timUpdateStats.Enabled = true;
         }
 
         private void LoadProperties()
@@ -177,6 +179,8 @@ namespace EpicBattleSimulator
             }
             else
             {
+                lblEnemyInfo.Text = enemy.EmptyInfo();
+                timUpdateStats.Enabled = false;
                 return;
             }
         }
@@ -451,6 +455,13 @@ namespace EpicBattleSimulator
 
             }
         }
+
+        private void cmdGoToCity_Click(object sender, EventArgs e)
+        {
+            Stadt frm = new Stadt(this);
+            frm.ShowDialog();
+        }
+
 
 
     }

@@ -41,6 +41,10 @@ namespace EpicBattleSimulator
                   $"Level: {Level}";
         }
 
+        public string EmptyInfo()
+        {
+            return "";
+        }
 
         public int Bonusschaden
         {
