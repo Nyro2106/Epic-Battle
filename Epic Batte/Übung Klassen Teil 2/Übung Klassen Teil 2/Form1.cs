@@ -35,11 +35,12 @@ namespace EpicBattleSimulator
 
         int roundcount = 1;
         int poisoncount = 3;
+        bool defeated = false;
         Random rand = new Random();
 
 
-        Fighter player = new Fighter("", 100, 100, 10, 10, 1, 1, 0, 80);
-        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1, 1, 0, 100);
+        Fighter player = new Fighter("", 180, 180, 20, 10, 1, 1, 0, 80, false);
+        Fighter enemy = new Fighter("Tork der Ork", 100, 100, 10, 10, 1, 1, 0, 100, false);
 
 
         private void UpdateInfo()
@@ -55,7 +56,6 @@ namespace EpicBattleSimulator
                 string name = Interaction.InputBox("Gib hier den Namen deines Helden ein!", "Name", "Heldenname");
                 player.Name = name;
             }
-            UpdateInfo();
             GenerateEnemy();
             EnableButtons();
             player.Vergiftet = false;
@@ -72,7 +72,6 @@ namespace EpicBattleSimulator
             lblPlayer.Text = $"{player.Name}";
             lblEnemy.Text = $"{enemy.Name}";
             poisoncount = 3;
-            UpdateInfo();
         }
 
         private void LoadProperties()
@@ -102,7 +101,7 @@ namespace EpicBattleSimulator
                 lblInfo.Text += $"und verursacht {currentdmg} Schaden\n";
                 progBarHealth.Value -= currentdmg;
                 player.Leben -= currentdmg;
-                if (player.Leben > 50 && player.Vergiftet == false)
+                if (player.Leben > 50 && player.Vergiftet == false && enemy.isVenomous)
                 {
                     player.Vergiftet = true;
                     lblInfo.Text += $"Du wurdest vergiftet";
@@ -111,7 +110,6 @@ namespace EpicBattleSimulator
                 {
                     progBarHealth.Value = -1;
                 }
-                UpdateInfo();
                 timRound2.Enabled = true;
             }
             catch
@@ -120,7 +118,6 @@ namespace EpicBattleSimulator
                 playAgain();
             }
         }
-
 
 
         private void checkVergiftung()
@@ -134,7 +131,6 @@ namespace EpicBattleSimulator
                     lblInfo.Text += $"Du erleidest {currentpoison} Giftschaden!\n";
                     player.Leben -= currentpoison;
                     progBarHealth.Value -= currentpoison;
-                    UpdateInfo();
                     if (progBarHealth.Value == 0)
                     {
                         progBarHealth.Value -= 1;
@@ -150,13 +146,13 @@ namespace EpicBattleSimulator
                     poisoncount = 3;
                     toolStripStatusLbLBottom.Text = $"Status: Normal";
                     toolStripStatusLeisteBottom.Value = 0;
-                    lblInfo.Text += "Du bist nichtmehr vergiftet!\n";
                 }
             }
             catch
             {
                 disableTimers();
                 playerDefeated();
+                playAgain();
             }
 
         }
@@ -165,6 +161,10 @@ namespace EpicBattleSimulator
         {
             progBarHealth.Value = progBarHealth.Minimum;
             DisableButtons();
+            defeated = true;
+            getEXP();
+            timRound.Enabled = false;
+            timRound2.Enabled = false;
             lblInfo.Text += "Du wurdest besiegt!";
             return;
         }
@@ -233,6 +233,10 @@ namespace EpicBattleSimulator
             checkVergiftung();
         }
 
+        private void timUpdateStats_Tick(object sender, EventArgs e)
+        {
+            UpdateInfo();
+        }
 
         private void beendenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -293,7 +297,6 @@ namespace EpicBattleSimulator
                 player.Leben = player.MaxLeben;
             }
             DisableButtons();
-            UpdateInfo();
             timRound.Enabled = true;
         }
 
@@ -311,7 +314,6 @@ namespace EpicBattleSimulator
                 {
                     progBarEnemy.Value -= 1;
                 }
-                UpdateInfo();
                 timRound.Enabled = true;
             }
             catch
@@ -322,16 +324,23 @@ namespace EpicBattleSimulator
                 lblInfo.Text = $"{enemy.Name} wurde besiegt!";
                 playAgain();
                 getEXP();
-                UpdateInfo();
             }
         }
 
         private void getEXP()
         {
             bool levelup = false;
+            int bonus = enemy.Leben / 100 * 120;
             
-
-            player.Experience += 120;
+            if (defeated)
+            {
+                player.Experience += enemy.Leben / 100 * 20;
+                defeated = false;
+            }
+            else
+            {
+                player.Experience += enemy.Leben + bonus;
+            }
             
 
             if (player.Experience >= player.MaxExperience)
@@ -457,6 +466,7 @@ namespace EpicBattleSimulator
                     enemy.Attacke = (int)reader["attacke"];
                     enemy.Zaubermacht = (int)reader["zaubermacht"];
                     enemy.Level = (int)reader["level"];
+                    enemy.isVenomous = Convert.ToBoolean(reader["venomous"]);
 
                 }
                 reader.Close();
@@ -469,8 +479,6 @@ namespace EpicBattleSimulator
 
             }
         }
-
-
 
 
     }

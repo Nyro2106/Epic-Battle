@@ -53,6 +53,7 @@
             this.picSwordAttack = new System.Windows.Forms.PictureBox();
             this.lblPlayerInfo = new System.Windows.Forms.Label();
             this.lblEnemyInfo = new System.Windows.Forms.Label();
+            this.timUpdateStats = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStripZauberbuch.SuspendLayout();
@@ -248,6 +249,11 @@
             this.lblEnemyInfo.TabIndex = 23;
             this.lblEnemyInfo.Text = "Info:";
             // 
+            // timUpdateStats
+            // 
+            this.timUpdateStats.Enabled = true;
+            this.timUpdateStats.Tick += new System.EventHandler(this.timUpdateStats_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -304,6 +310,7 @@
         private System.Windows.Forms.PictureBox picSwordAttack;
         private System.Windows.Forms.Label lblPlayerInfo;
         private System.Windows.Forms.Label lblEnemyInfo;
+        private System.Windows.Forms.Timer timUpdateStats;
     }
 }
 

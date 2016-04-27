@@ -20,12 +20,13 @@ namespace EpicBattleSimulator
         private int zaubermacht;
         private int level;
         private bool poisoned = false;
+        private bool venomous = false;
         private int roundcount;
         private int experience;
         private int maxexperience;
         Random randy = new Random();
 
-        public Fighter(string nam, int maxl, int life, int attack, int zm, int lvl, int round, int exp, int maxexp)
+        public Fighter(string nam, int maxl, int life, int attack, int zm, int lvl, int round, int exp, int maxexp, bool ven)
         {
             name = nam;
             maxleben = maxl;
@@ -36,7 +37,7 @@ namespace EpicBattleSimulator
             roundcount = round;
             experience = exp;
             maxexperience = maxexp;
-
+            venomous = ven;
         }
 
         public Fighter()
@@ -149,6 +150,19 @@ namespace EpicBattleSimulator
                 poisoned = value;
             }
         }
+
+        public bool isVenomous
+        {
+            get
+            {
+                return venomous;
+            }
+            set
+            {
+                venomous = value;
+            }
+        }
+
 
         public int Bonusheilung
         {
