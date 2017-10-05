@@ -62,7 +62,6 @@ namespace EpicBattleSimulator
             enemy.Leben = enemy.MaxLeben;
             lblPlayer.Text = $"{player.Name}";
             lblEnemy.Text = $"{enemy.Name}";
-            lblStatus.Text = "";
             poisoncount = 3;
         }
 
@@ -257,7 +256,6 @@ namespace EpicBattleSimulator
                 disableTimers();
                 progBarEnemy.Value = progBarEnemy.Minimum;
                 DisableButtons();
-                lblStatus.Text = "Du hast gewonnen!";
                 lblInfo.Text = $"{enemy.Name} wurde besiegt!";
             }
         }
